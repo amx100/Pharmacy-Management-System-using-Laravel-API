@@ -22,7 +22,7 @@ class PurchaseController extends Controller
     {
         $filter = new PurchasesFilter();
         $filterItems = $filter->transform($request);
-        $includeCustomerAndDrug = $request->query('include');
+        $includeCustomerAndDrug = $request->query('includeDrugs');
 
         $purchases = Purchase::where($filterItems);
 

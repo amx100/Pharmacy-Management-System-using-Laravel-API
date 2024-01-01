@@ -20,4 +20,12 @@ class Drug extends Model
         'EXPIRATION_DATE',
         'QUANTITY',
     ];
+
+   // app/Models/Drug.php
+
+   public function customer()
+   {
+       return $this->belongsTo(Customer::class, 'CUSTOMER_ID', 'CUSTOMER_ID');
+   }
+
 }

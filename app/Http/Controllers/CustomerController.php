@@ -21,14 +21,15 @@ class CustomerController extends Controller
         $filter = new CustomersFilter();
         $filterItems = $filter->transform($request);
         $includeDrugs = $request->query('includeDrugs');
-
+    
         $customers = Customer::where($filterItems);
-
+    
         if ($includeDrugs) {
-            $customers->with('drugs'); // 'drugs' should be the name of the relationship in the Customer model
+            $customers->with('drugs');
         }
-
+    
         $customers = $customers->paginate();
+    
         return new CustomerCollection($customers->appends(request()->query()));
     }
 

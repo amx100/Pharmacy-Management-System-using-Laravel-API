@@ -24,4 +24,9 @@ class Purchase extends Model
     {
         return $this->belongsTo(Customer::class, 'CUSTOMER_ID', 'CUSTOMER_ID');
     }
+
+    public function drug()
+    {
+        return $this->belongsTo(Drug::class, 'DRUG_ID', 'DRUG_ID');
+    }
 }

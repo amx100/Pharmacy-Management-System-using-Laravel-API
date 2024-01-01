@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
+    
     use HasFactory;
     protected $table = 'customers';
     protected $primaryKey = 'CUSTOMER_ID';
@@ -17,4 +18,12 @@ class Customer extends Model
         'LAST_NAME',
         'DOB',
     ];
+    
+  // app/Models/Customer.php
+
+public function drugs()
+{
+    return $this->hasMany(Drug::class, 'CUSTOMER_ID', 'CUSTOMER_ID');
+}
+
 }
