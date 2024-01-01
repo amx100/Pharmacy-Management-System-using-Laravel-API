@@ -20,12 +20,12 @@ class CustomerController extends Controller
     {
         $filter = new CustomersFilter();
         $filterItems = $filter->transform($request);
-        $includeInvoices = $request->query('include');
+        $includeDrugs = $request->query('includeDrugs');
 
         $customers = Customer::where($filterItems);
 
-        if ($includeInvoices) {
-            $customers = $customers->with('invoices');
+        if ($includeDrugs) {
+            $customers->with('drugs'); // 'drugs' should be the name of the relationship in the Customer model
         }
 
         $customers = $customers->paginate();
@@ -43,12 +43,12 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Customer $customer)
+    public function show(Customer $customer, Request $request)
     {
-        $includeInvoices = request()->query('include');
+        $includeDrugs = $request->query('includeDrugs');
 
-        if ($includeInvoices) {
-            $customer = new CustomerResource($customer->loadMissing('invoices'));
+        if ($includeDrugs) {
+            $customer->load('drugs');
         }
 
         return new CustomerResource($customer);
@@ -60,6 +60,13 @@ class CustomerController extends Controller
     public function update(UpdateCustomerRequest $request, Customer $customer)
     {
         $customer->update($request->all());
+
+        $includeDrugs = $request->query('includeDrugs');
+
+        if ($includeDrugs) {
+            $customer->load('drugs');
+        }
+
         return new CustomerResource($customer);
     }
 
@@ -72,4 +79,3 @@ class CustomerController extends Controller
         return response()->json(null, 204);
     }
 }
-
