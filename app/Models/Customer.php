@@ -21,9 +21,11 @@ class Customer extends Model
     
   // app/Models/Customer.php
 
-public function drugs()
-{
-    return $this->hasMany(Drug::class, 'CUSTOMER_ID', 'CUSTOMER_ID');
-}
+
+
+public function purchaseHistories()
+    {
+        return $this->hasMany(Purchase::class, 'CUSTOMER_ID', 'CUSTOMER_ID');
+    }
 
 }

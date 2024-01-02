@@ -20,12 +20,14 @@ class CustomerController extends Controller
     {
         $filter = new CustomersFilter();
         $filterItems = $filter->transform($request);
-        $includeDrugs = $request->query('includeDrugs');
+ 
+        $onlyCustomersWithPurchase = $request->query('onlyCustomersWithPurchase');
     
         $customers = Customer::where($filterItems);
     
-        if ($includeDrugs) {
-            $customers->with('drugs');
+    
+        if ($onlyCustomersWithPurchase) {
+            $customers->whereHas('purchaseHistories');
         }
     
         $customers = $customers->paginate();
