@@ -12,6 +12,7 @@ use App\Http\Resources\DrugResource;
 use App\Http\Resources\DrugCollection;
 
 use App\Http\Requests\BulkStoreDrugRequest;
+use Illuminate\Support\Arr;
 
 class DrugController extends Controller
 {
@@ -47,8 +48,13 @@ class DrugController extends Controller
 
     public function bulkStore(BulkStoreDrugRequest $request)
     {
-        $drugs = Drug::createMany($request->all());
-        return DrugResource::collection($drugs);
+        $bulk = collect($request->all())->map(function ($arr) {
+            return Arr::only($arr, ['NAME', 'TYPE', 'DOSE', 'SELLING_PRICE', 'EXPIRATION_DATE', 'QUANTITY']);
+        });
+        
+        Drug::insert($bulk->toArray());
+
+        return response()->json(['message' => 'Bulk insert successful'], 201);
     }
     
     /**

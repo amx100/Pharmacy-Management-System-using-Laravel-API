@@ -10,7 +10,7 @@ use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Resources\CustomerResource;
 use App\Http\Resources\CustomerCollection;
-
+use Illuminate\Support\Arr;
 
 use App\Http\Requests\BulkStoreCustomerRequest;
 
@@ -39,8 +39,13 @@ class CustomerController extends Controller
 
     public function bulkStore(BulkStoreCustomerRequest $request)
     {
-        $customers = Customer::createMany($request->all());
-        return CustomerResource::collection($customers);
+        $bulk = collect($request->all())->map(function ($arr) {
+            return Arr::only($arr, ['FIRST_NAME', 'LAST_NAME', 'DOB']);
+        });
+
+        Customer::insert($bulk->toArray());
+
+        return response()->json(['message' => 'Bulk insert successful'], 201);
     }
 
     /**

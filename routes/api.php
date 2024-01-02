@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
- // Customers
+
  Route::get('customers', [CustomerController::class, 'index']);
  Route::get('customers/{customer}', [CustomerController::class, 'show']);
  Route::post('customers', [CustomerController::class, 'store']);
@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
  Route::patch('customers/{customer}', [CustomerController::class, 'update']);
  Route::delete('customers/{customer}', [CustomerController::class, 'destroy']);
 
- // Drugs
+
  Route::get('drugs', [DrugController::class, 'index']);
  Route::get('drugs/{drug}', [DrugController::class, 'show']);
  Route::post('drugs', [DrugController::class, 'store']);
@@ -39,7 +39,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
  Route::patch('drugs/{drug}', [DrugController::class, 'update']);
  Route::delete('drugs/{drug}', [DrugController::class, 'destroy']);
 
- // Purchases
+
  Route::get('purchases', [PurchaseController::class, 'index']);
  Route::get('purchases/{purchase}', [PurchaseController::class, 'show']);
  Route::post('purchases', [PurchaseController::class, 'store']);
@@ -50,9 +50,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
  Route::apiResource('drugs', DrugController::class);
  Route::apiResource('customers', CustomerController::class);
- Route::apiResource('purchases', PurchaseController::class); // Dodajte PurchaseController
+ Route::apiResource('purchases', PurchaseController::class); 
 
- // Dodajte sledeće linije za podršku bulkStore akcijama
+
  Route::post('drugs/bulk', [DrugController::class, 'bulkStore']);
  Route::post('customers/bulk', [CustomerController::class, 'bulkStore']);
- Route::post('purchases/bulk', [PurchaseController::class, 'bulkStore']); // Dodajte PurchaseController
+ Route::post('purchases/bulk', [PurchaseController::class, 'bulkStore']); 

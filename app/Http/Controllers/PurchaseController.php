@@ -14,6 +14,7 @@ use App\Http\Resources\PurchaseResource;
 use App\Http\Resources\PurchaseCollection;
 
 use App\Http\Requests\BulkStorePurchaseRequest;
+use Illuminate\Support\Arr;
 
 class PurchaseController extends Controller
 {
@@ -46,8 +47,13 @@ class PurchaseController extends Controller
 
     public function bulkStore(BulkStorePurchaseRequest $request)
     {
-        $purchases = Purchase::createMany($request->all());
-        return PurchaseResource::collection($purchases);
+        $bulk = collect($request->all())->map(function ($arr) {
+            return Arr::only($arr, ['CUSTOMER_ID', 'DRUG_ID', 'QUANTITY_PURCHASED', 'TOTAL_BILL', 'PURCHASE_DATE']);
+        });
+
+        Purchase::insert($bulk->toArray());
+
+        return response()->json(['message' => 'Bulk insert successful'], 201);
     }
 
     /**
