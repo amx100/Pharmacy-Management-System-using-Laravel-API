@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-
+Route::middleware('auth:sanctum')->group(function () {
  Route::get('customers', [CustomerController::class, 'index']);
  Route::get('customers/{customer}', [CustomerController::class, 'show']);
  Route::post('customers', [CustomerController::class, 'store']);
@@ -56,3 +56,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
  Route::post('drugs/bulk', [DrugController::class, 'bulkStore']);
  Route::post('customers/bulk', [CustomerController::class, 'bulkStore']);
  Route::post('purchases/bulk', [PurchaseController::class, 'bulkStore']); 
+
+});
