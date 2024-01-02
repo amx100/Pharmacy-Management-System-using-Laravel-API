@@ -12,13 +12,24 @@ class Purchase extends Model
     protected $primaryKey = 'PURCHASE_ID';
     public $timestamps = false;
 
+    protected $touches = ['drug'];
+
     protected $fillable = [
         'CUSTOMER_ID',
         'DRUG_ID',
         'PURCHASE_DATE',
-        'QUANTITY_PURCHASED',
-        'TOTAL_BILL',
+        'QUANTITY_PURCHASED'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($purchase) {
+            $drug = $purchase->drug;
+            $purchase->TOTAL_BILL = $drug->SELLING_PRICE * $purchase->QUANTITY_PURCHASED;
+        });
+    }
 
     public function customer()
     {

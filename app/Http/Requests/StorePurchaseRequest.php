@@ -24,7 +24,7 @@ class StorePurchaseRequest extends FormRequest
             'DRUG_ID' => 'required|exists:drugs,DRUG_ID',
             'PURCHASE_DATE' => 'required|date',
             'QUANTITY_PURCHASED' => 'required|integer|min:1',
-            'TOTAL_BILL' => 'required|numeric|min:0',
+            'TOTAL_BILL' => 'numeric|min:0',
         ];
     }
 }

@@ -24,12 +24,17 @@ class Drug extends Model
 
 
 
-   public function customer()
-   {
-       return $this->belongsTo(Customer::class, 'CUSTOMER_ID', 'CUSTOMER_ID');
-   }
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class, 'DRUG_ID', 'DRUG_ID');
+    }
 
-   public function purchaseHistories()
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'CUSTOMER_ID', 'CUSTOMER_ID');
+    }
+
+    public function purchaseHistories()
     {
         return $this->hasMany(Purchase::class, 'DRUG_ID', 'DRUG_ID');
     }
@@ -38,5 +43,4 @@ class Drug extends Model
     {
         return $query->whereHas('purchaseHistories');
     }
-
 }

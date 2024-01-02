@@ -42,7 +42,15 @@ class PurchaseController extends Controller
      */
     public function store(StorePurchaseRequest $request)
     {
-        return new PurchaseResource(Purchase::create($request->all()));
+        $purchase = Purchase::create($request->all());
+
+        // Dodajte sledeće linije za automatsko ažuriranje količine u Drug modelu
+        $drug = $purchase->drug;
+        $newQuantity = $drug->QUANTITY - $purchase->QUANTITY_PURCHASED;
+        $drug->update(['QUANTITY' => max(0, $newQuantity)]);
+    
+        return new PurchaseResource($purchase);
+       // return new PurchaseResource(Purchase::create($request->all()));
     }
 
     public function bulkStore(BulkStorePurchaseRequest $request)
