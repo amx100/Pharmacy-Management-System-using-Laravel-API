@@ -46,3 +46,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
  Route::put('purchases/{purchase}', [PurchaseController::class, 'update']);
  Route::patch('purchases/{purchase}', [PurchaseController::class, 'update']);
  Route::delete('purchases/{purchase}', [PurchaseController::class, 'destroy']);
+
+
+ Route::apiResource('drugs', DrugController::class);
+ Route::apiResource('customers', CustomerController::class);
+ Route::apiResource('purchases', PurchaseController::class); // Dodajte PurchaseController
+
+ // Dodajte sledeće linije za podršku bulkStore akcijama
+ Route::post('drugs/bulk', [DrugController::class, 'bulkStore']);
+ Route::post('customers/bulk', [CustomerController::class, 'bulkStore']);
+ Route::post('purchases/bulk', [PurchaseController::class, 'bulkStore']); // Dodajte PurchaseController
