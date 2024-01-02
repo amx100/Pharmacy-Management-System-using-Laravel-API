@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Controllers;
 
 use App\Http\Filters\DrugsFilter;
@@ -12,6 +10,8 @@ use App\Http\Requests\StoreDrugRequest;
 use App\Http\Requests\UpdateDrugRequest;
 use App\Http\Resources\DrugResource;
 use App\Http\Resources\DrugCollection;
+
+use App\Http\Requests\BulkStoreDrugRequest;
 
 class DrugController extends Controller
 {
@@ -27,12 +27,15 @@ class DrugController extends Controller
         $drugs = Drug::where($filterItems);
 
         if ($includePurchaseHistories) {
-            $drugs = $drugs->with('purchaseHistories');
+            $drugs->with('purchaseHistories');
         }
 
         $drugs = $drugs->paginate();
+
         return new DrugCollection($drugs->appends(request()->query()));
     }
+
+  
 
     /**
      * Store a newly created resource in storage.
@@ -42,6 +45,12 @@ class DrugController extends Controller
         return new DrugResource(Drug::create($request->all()));
     }
 
+    public function bulkStore(BulkStoreDrugRequest $request)
+    {
+        $drugs = Drug::createMany($request->all());
+        return DrugResource::collection($drugs);
+    }
+    
     /**
      * Display the specified resource.
      */

@@ -13,6 +13,8 @@ use App\Http\Requests\UpdatePurchaseRequest;
 use App\Http\Resources\PurchaseResource;
 use App\Http\Resources\PurchaseCollection;
 
+use App\Http\Requests\BulkStorePurchaseRequest;
+
 class PurchaseController extends Controller
 {
     /**
@@ -40,6 +42,12 @@ class PurchaseController extends Controller
     public function store(StorePurchaseRequest $request)
     {
         return new PurchaseResource(Purchase::create($request->all()));
+    }
+
+    public function bulkStore(BulkStorePurchaseRequest $request)
+    {
+        $purchases = Purchase::createMany($request->all());
+        return PurchaseResource::collection($purchases);
     }
 
     /**

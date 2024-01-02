@@ -11,6 +11,9 @@ use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Resources\CustomerResource;
 use App\Http\Resources\CustomerCollection;
 
+
+use App\Http\Requests\BulkStoreCustomerRequest;
+
 class CustomerController extends Controller
 {
     /**
@@ -20,17 +23,8 @@ class CustomerController extends Controller
     {
         $filter = new CustomersFilter();
         $filterItems = $filter->transform($request);
- 
-        $onlyCustomersWithPurchase = $request->query('onlyCustomersWithPurchase');
     
-        $customers = Customer::where($filterItems);
-    
-    
-        if ($onlyCustomersWithPurchase) {
-            $customers->whereHas('purchaseHistories');
-        }
-    
-        $customers = $customers->paginate();
+        $customers = Customer::where($filterItems)->paginate();
     
         return new CustomerCollection($customers->appends(request()->query()));
     }
@@ -41,6 +35,12 @@ class CustomerController extends Controller
     public function store(StoreCustomerRequest $request)
     {
         return new CustomerResource(Customer::create($request->all()));
+    }
+
+    public function bulkStore(BulkStoreCustomerRequest $request)
+    {
+        $customers = Customer::createMany($request->all());
+        return CustomerResource::collection($customers);
     }
 
     /**
