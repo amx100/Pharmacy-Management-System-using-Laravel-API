@@ -10,7 +10,6 @@ use App\Http\Requests\StoreDrugRequest;
 use App\Http\Requests\UpdateDrugRequest;
 use App\Http\Resources\DrugResource;
 use App\Http\Resources\DrugCollection;
-
 use App\Http\Requests\BulkStoreDrugRequest;
 use Illuminate\Support\Arr;
 

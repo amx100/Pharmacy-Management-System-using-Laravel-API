@@ -19,9 +19,6 @@ class Customer extends Model
         'DOB',
     ];
     
-  // app/Models/Customer.php
-
-
 
 public function purchaseHistories()
     {
