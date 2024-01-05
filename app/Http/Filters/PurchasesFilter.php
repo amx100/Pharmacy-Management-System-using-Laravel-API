@@ -13,6 +13,7 @@ class PurchasesFilter extends ApiFilter
         'purchase_date' => ['eq'],
         'quantity_purchased' => ['eq', 'gt', 'lt'],
         'total_bill' => ['eq', 'gt', 'lt'],
+        'IS_REFUNDED' => ['eq']
  
     ];
 
@@ -20,6 +21,7 @@ class PurchasesFilter extends ApiFilter
         'customer_id' => 'CUSTOMER_ID',
         'drug_id' => 'DRUG_ID',
         'purchase_date' => 'PURCHASE_DATE',
+        'IS_REFUNDED' => 'IS_REFUNDED'
       
     ];
 

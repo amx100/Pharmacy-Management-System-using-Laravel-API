@@ -81,8 +81,20 @@ class PurchaseController extends Controller
      */
     public function update(UpdatePurchaseRequest $request, Purchase $purchase)
     {
+        $originalQuantityPurchased = $purchase->QUANTITY_PURCHASED;
+
+     
         $purchase->update($request->all());
-        return new PurchaseResource($purchase);
+    
+   
+        if ($request->has('IS_REFUNDED') && $request->input('IS_REFUNDED') === true || $request->input('IS_REFUNDED') == 1) {
+       
+            $drug = $purchase->drug;
+            $newQuantity = $drug->QUANTITY + $originalQuantityPurchased;
+            $drug->update(['QUANTITY' => $newQuantity]);
+        }
+    
+        return new PurchaseResource($purchase);;
     }
 
     /**

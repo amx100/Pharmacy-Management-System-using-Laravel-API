@@ -18,7 +18,8 @@ class Purchase extends Model
         'CUSTOMER_ID',
         'DRUG_ID',
         'PURCHASE_DATE',
-        'QUANTITY_PURCHASED'
+        'QUANTITY_PURCHASED',
+        'IS_REFUNDED'
     ];
 
     protected static function boot()

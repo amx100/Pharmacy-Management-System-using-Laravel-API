@@ -27,6 +27,7 @@ class UpdatePurchaseRequest extends FormRequest
             'PURCHASE_DATE' => 'sometimes|required|date',
             'QUANTITY_PURCHASED' => 'sometimes|required|integer|min:1',
             'TOTAL_BILL' => 'sometimes|required|numeric|min:0',
+            'IS_REFUNDED' => 'sometimes|boolean',
         ];
     }
 }

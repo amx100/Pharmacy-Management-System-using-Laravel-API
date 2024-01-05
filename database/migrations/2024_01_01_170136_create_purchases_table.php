@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamp('PURCHASE_DATE')->default(now());
             $table->integer('QUANTITY_PURCHASED');
             $table->double('TOTAL_BILL');
+            $table->boolean('IS_REFUNDED')->default(false);
     
         });
     }

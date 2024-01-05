@@ -25,6 +25,7 @@ class StorePurchaseRequest extends FormRequest
             'PURCHASE_DATE' => 'required|date',
             'QUANTITY_PURCHASED' => 'required|integer|min:1',
             'TOTAL_BILL' => 'numeric|min:0',
+            'IS_REFUNDED' => 'sometimes|boolean',
         ];
     }
 }
