@@ -38,32 +38,50 @@ class PurchaseController extends Controller
      */
     public function store(StorePurchaseRequest $request)
     {
-        $purchase = Purchase::create($request->all());
+        $purchaseData = $request->all();
+
+        $drug = Drug::find($purchaseData['DRUG_ID']);
+        if ($drug && $drug->EXPIRATION_DATE < now()) {
+            return response()->json(['message' => 'Izvinjavamo se, ali lek je istekao.'], 400);
+        }
+
+        $purchase = Purchase::create($purchaseData);
         $drug = $purchase->drug;
         $newQuantity = $drug->QUANTITY - $purchase->QUANTITY_PURCHASED;
         $drug->update(['QUANTITY' => max(0, $newQuantity)]);
     
         return new PurchaseResource($purchase);
-       // return new PurchaseResource(Purchase::create($request->all()));
     }
 
     public function bulkStore(BulkStorePurchaseRequest $request)
     {
         $bulk = collect($request->all())->map(function ($arr) {
-            // Postavi TOTAL_BILL na null ako nije eksplicitno naveden u JSON-u
-            $arr['TOTAL_BILL'] = $arr['TOTAL_BILL'] ?? null;
-    
-            // Ako TOTAL_BILL nije eksplicitno naveden, izračunaj ga na osnovu QUANTITY_PURCHASED i SELLING_PRICE
-            if ($arr['TOTAL_BILL'] === null) {
-                $drug = Drug::find($arr['DRUG_ID']);
-                $arr['TOTAL_BILL'] = $drug->SELLING_PRICE * $arr['QUANTITY_PURCHASED'];
+            $drug = Drug::find($arr['DRUG_ID']);
+            if ($drug && $drug->EXPIRATION_DATE < now()) {
+                return [
+                    'CUSTOMER_ID' => $arr['CUSTOMER_ID'],
+                    'DRUG_ID' => $arr['DRUG_ID'],
+                    'error' => 'Izvinjavamo se, ali lek je istekao.',
+                ];
             }
-    
-            return Arr::only($arr, ['CUSTOMER_ID', 'DRUG_ID', 'QUANTITY_PURCHASED', 'PURCHASE_DATE', 'TOTAL_BILL']);
+
+            $arr['TOTAL_BILL'] = $arr['TOTAL_BILL'] ?? null;
+
+            return $arr;
         });
-    
+
+        $expiredDrugs = $bulk->where('error', '!=', null)->all();
+
+        if (!empty($expiredDrugs)) {
+            return response()->json(['message' => 'Neki lekovi su istekli.', 'expired_drugs' => $expiredDrugs], 400);
+        }
+
+        $bulk = $bulk->reject(function ($arr) {
+            return isset($arr['error']);
+        });
+
         Purchase::insert($bulk->toArray());
-    
+
         return response()->json(['message' => 'Bulk insert successful'], 201);
     }
 
