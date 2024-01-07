@@ -24,8 +24,6 @@ class PurchaseResource extends JsonResource
             'TOTAL_BILL' => $this->TOTAL_BILL,
             'IS_REFUNDED' => $this->IS_REFUNDED,
             'customer_name' => $this->customer->FIRST_NAME . ' ' . $this->customer->LAST_NAME,
-           // 'customer' => new CustomerResource($this->whenLoaded('customer')),
-           // 'drug' => new DrugResource($this->whenLoaded('drug'))
         ];
     }
 }
