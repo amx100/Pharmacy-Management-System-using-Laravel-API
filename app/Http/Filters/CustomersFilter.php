@@ -9,17 +9,14 @@ class CustomersFilter extends ApiFilter
         'first_name' => ['eq'],
         'last_name' => ['eq'],
         'dob' => ['eq'],
-       
     ];
 
     protected $columnMap = [
         'first_name' => 'FIRST_NAME',
         'last_name' => 'LAST_NAME',
-      
     ];
 
     protected $operatorMap = [
         'eq' => '=',
-     
     ];
 }

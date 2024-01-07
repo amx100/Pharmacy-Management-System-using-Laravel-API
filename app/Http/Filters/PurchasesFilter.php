@@ -10,7 +10,7 @@ class PurchasesFilter extends ApiFilter
     protected $safeParams = [
         'customer_id' => ['eq'],
         'drug_id' => ['eq'],
-        'purchase_date' => ['eq'],
+        'purchase_date' => ['eq','gt','lt'],
         'quantity_purchased' => ['eq', 'gt', 'lt'],
         'total_bill' => ['eq', 'gt', 'lt'],
         'IS_REFUNDED' => ['eq']

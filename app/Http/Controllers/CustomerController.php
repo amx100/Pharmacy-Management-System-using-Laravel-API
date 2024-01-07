@@ -23,12 +23,11 @@ class CustomerController extends Controller
     {
         $filter = new CustomersFilter();
         $filterItems = $filter->transform($request);
-    
+        
         $customers = Customer::where($filterItems)->paginate();
-    
+        
         return new CustomerCollection($customers->appends(request()->query()));
     }
-
     /**
      * Store a newly created resource in storage.
      */

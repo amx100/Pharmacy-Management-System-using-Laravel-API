@@ -27,13 +27,11 @@ class PurchaseController extends Controller
         $filterItems = $filter->transform($request);
         $includeCustomerAndDrug = $request->query('includeDrugs');
 
-        $purchases = Purchase::where($filterItems);
+        $purchases = Purchase::where($filterItems)->paginate();
 
         if ($includeCustomerAndDrug) {
             $purchases = $purchases->with(['customer', 'drug']);
         }
-
-        $purchases = $purchases->paginate();
         return new PurchaseCollection($purchases->appends(request()->query()));
     }
 

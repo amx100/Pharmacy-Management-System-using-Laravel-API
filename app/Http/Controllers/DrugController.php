@@ -24,13 +24,11 @@ class DrugController extends Controller
         $filterItems = $filter->transform($request);
         $includePurchaseHistories = $request->query('include');
 
-        $drugs = Drug::where($filterItems);
+        $drugs = Drug::where($filterItems)->paginate();
 
         if ($includePurchaseHistories) {
             $drugs->with('purchaseHistories');
         }
-
-        $drugs = $drugs->paginate();
 
         return new DrugCollection($drugs->appends(request()->query()));
     }
