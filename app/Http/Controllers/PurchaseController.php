@@ -61,8 +61,31 @@ class PurchaseController extends Controller
 
     public function bulkStore(BulkStorePurchaseRequest $request)
     {
-        $bulk = collect($request->all())->map(function ($arr) {
-            // Dodajte proveru za istek roka leka
+        $bulk = $this->checkDrugsAvailability($request->all());
+        $errorDrugs = collect($bulk)->where('error', '!=', null)->all();
+
+        if (!empty($errorDrugs)) {
+            return response()->json(['message' => 'Neki lekovi nisu dostupni.', 'error_drugs' => $errorDrugs], 400);
+        }
+
+        $bulk = collect($bulk)->reject(function ($arr) {
+            return isset($arr['error']);
+        })->toArray();
+
+        $formattedBulk = collect($bulk)->map(function ($arr) {
+            $arr['TOTAL_BILL'] = $arr['TOTAL_BILL'] ?? $this->calculateTotalBill($arr['DRUG_ID'], $arr['QUANTITY_PURCHASED']);
+            return Arr::only($arr, ['CUSTOMER_ID', 'DRUG_ID', 'PURCHASE_DATE', 'QUANTITY_PURCHASED', 'TOTAL_BILL']);
+        });
+
+        // Napravite kupovine za preostale lekove
+        Purchase::insert($formattedBulk->toArray());
+
+        return response()->json(['message' => 'Bulk insert successful'], 201);
+    }
+
+    private function checkDrugsAvailability(array $bulk): array
+    {
+        return collect($bulk)->map(function ($arr) {
             $drug = Drug::find($arr['DRUG_ID']);
             if ($drug && $drug->EXPIRATION_DATE < now()) {
                 return [
@@ -71,6 +94,7 @@ class PurchaseController extends Controller
                     'error' => 'Izvinjavamo se, ali lek je istekao.',
                 ];
             }
+
             $availableQuantity = $drug ? $drug->QUANTITY : 0;
             $requestedQuantity = $arr['QUANTITY_PURCHASED'];
             if ($requestedQuantity > $availableQuantity) {
@@ -80,30 +104,20 @@ class PurchaseController extends Controller
                     'error' => 'Nema dovoljno lekova na stanju.',
                 ];
             }
+
             $arr['TOTAL_BILL'] = $arr['TOTAL_BILL'] ?? null;
 
             return $arr;
-        });
-
-        $errorDrugs = $bulk->where('error', '!=', null)->all();
-        if (!empty($errorDrugs)) {
-            return response()->json(['message' => 'Neki lekovi nisu dostupni.', 'error_drugs' => $errorDrugs], 400);
-        }
-        $bulk = $bulk->reject(function ($arr) {
-            return isset($arr['error']);
-        });
-
-        Purchase::insert($bulk->toArray());
-        foreach ($bulk as $arr) {
-            $drug = Drug::find($arr['DRUG_ID']);
-            $newQuantity = $drug->QUANTITY - $arr['QUANTITY_PURCHASED'];
-            $drug->update(['QUANTITY' => max(0, $newQuantity)]);
-        }
-
-        return response()->json(['message' => 'Bulk insert successful'], 201);
+        })->toArray();
+    }
+    
+    private function calculateTotalBill($drugId, $quantity)
+    {
+        $drug = Drug::find($drugId);
+        return $drug ? $drug->SELLING_PRICE * $quantity : null;
     }
 
-
+    
     /**
      * Display the specified resource.
      */
