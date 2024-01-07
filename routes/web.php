@@ -23,7 +23,7 @@ Route::get('/setup', function () {
     if (Auth::attempt($credentials)) {
         $adminToken = $user->createToken('admin-token', ['create', 'update', 'delete']);
         $updateToken = $user->createToken('update-token', ['create', 'update']);
-        $basicToken = $user->createToken('basic-token', ['none']);
+        $basicToken = $user->createToken('basic-token', ['read']);
 
         return [
             'admin' => $adminToken->plainTextToken,

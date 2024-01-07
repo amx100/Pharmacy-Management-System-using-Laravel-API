@@ -8,7 +8,9 @@ class StoreCustomerRequest extends FormRequest
 {
     public function authorize()
     {
-        return true; // You may need to customize the authorization logic if necessary.
+        $user = $this->user();
+
+        return $user != null && $user->tokenCan('create');
     }
 
 

@@ -1,6 +1,5 @@
 <?php
 
-// app/Http/Controllers/Api/V1/PurchaseController.php
 
 namespace App\Http\Controllers;
 
@@ -25,13 +24,11 @@ class PurchaseController extends Controller
     {
         $filter = new PurchasesFilter();
         $filterItems = $filter->transform($request);
-        $includeCustomerAndDrug = $request->query('includeDrugs');
+        
+        $purchases = Purchase::where($filterItems);
 
-        $purchases = Purchase::where($filterItems)->paginate();
-
-        if ($includeCustomerAndDrug) {
-            $purchases = $purchases->with(['customer', 'drug']);
-        }
+        $purchases = $purchases->paginate();
+    
         return new PurchaseCollection($purchases->appends(request()->query()));
     }
 
