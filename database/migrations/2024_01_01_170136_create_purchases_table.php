@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('DRUG_ID');
             $table->timestamp('PURCHASE_DATE')->default(now());
             $table->integer('QUANTITY_PURCHASED');
-            $table->double('TOTAL_BILL');
+            $table->double('TOTAL_BILL')->nullable();
             $table->boolean('IS_REFUNDED')->default(false);
     
         });

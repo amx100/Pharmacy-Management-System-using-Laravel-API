@@ -28,7 +28,7 @@ class BulkStorePurchaseRequest extends FormRequest
             '*.DRUG_ID' => ['required', 'integer'],
             '*.PURCHASE_DATE' => ['required', 'date'],
             '*.QUANTITY_PURCHASED' => ['required', 'integer'],
-            '*.TOTAL_BILL' => ['required', 'numeric'],
+          //  '*.TOTAL_BILL' => ['sometimes', 'nullable', 'numeric'],
         ];
     }
 
